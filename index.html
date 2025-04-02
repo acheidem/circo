@@ -3,74 +3,265 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redireccionando a YouTube</title>
+    <title>Redirección al Video Exclusivo</title>
     <style>
+        :root {
+            --youtube-red: #FF0000;
+            --youtube-dark: #0f0f0f;
+            --text-light: #f1f1f1;
+            --text-gray: #aaa;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
-            background-color: #f0f0f0;
+            background-color: var(--youtube-dark);
+            color: var(--text-light);
+            background-image: radial-gradient(circle at 50% 50%, #2a2a2a 0%, #0f0f0f 100%);
         }
-        .message {
+        
+        .redirect-card {
             text-align: center;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: rgba(15, 15, 15, 0.95);
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            max-width: 480px;
+            width: 90%;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            position: relative;
+            overflow: hidden;
         }
-        .message h1 {
-            font-size: 24px;
-            margin-bottom: 20px;
+        
+        .redirect-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,0,0,0.1) 0%, rgba(255,0,0,0) 70%);
+            animation: rotate 20s linear infinite;
+            z-index: -1;
         }
-        .message p {
-            font-size: 16px;
-            margin-bottom: 20px;
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
-        .message a {
-            color: #007bff;
+        
+        .youtube-icon {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 0 10px rgba(255,0,0,0.3));
+        }
+        
+        h1 {
+            color: var(--text-light);
+            margin: 0 0 1rem 0;
+            font-size: 1.8rem;
+            font-weight: 500;
+        }
+        
+        .subtitle {
+            color: var(--text-gray);
+            margin-bottom: 2rem;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        
+        .countdown-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 1.5rem 0;
+        }
+        
+        .countdown {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--youtube-red);
+            margin: 0 0.5rem;
+            min-width: 40px;
+            text-align: center;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin: 2rem 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: var(--youtube-red);
+            width: 0%;
+            transition: width 0.5s ease-out;
+            border-radius: 3px;
+        }
+        
+        .redirect-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--youtube-red);
+            color: white;
+            padding: 0.9rem 2.2rem;
+            border-radius: 50px;
             text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
         }
-        .hidden {
-            display: none;
+        
+        .redirect-button:hover {
+            background: #e60000;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
+        }
+        
+        .redirect-button:active {
+            transform: translateY(0);
+        }
+        
+        .play-icon {
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+        
+        @media (max-width: 480px) {
+            .redirect-card {
+                padding: 1.8rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .youtube-icon {
+                width: 70px;
+                height: 70px;
+            }
         }
     </style>
-    <script type="text/javascript">
-        // Función para detectar si es un dispositivo móvil
-        function isMobile() {
-            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        }
-
-        // Enlace profundo de YouTube (intenta abrir la app)
-        const youtubeDeepLink = "vnd.youtube://MM0CDk-p4FQ";
-        // Enlace web de YouTube (como respaldo)
-        const youtubeWebUrl = "https://youtu.be/MM0CDk-p4FQ?si=IabhfwjlQXQYg1Bs";
-
-        // Función para intentar abrir la app
-        function tryOpenApp() {
-            window.location.href = youtubeDeepLink;
-            setTimeout(function() {
-                // Si no se abre la app, redirige a la versión web
-                window.location.href = youtubeWebUrl;
-            }, 1000); // Espera 1 segundo antes de redirigir
-        }
-
-        // Redirección inicial
-        if (isMobile()) {
-            tryOpenApp(); // Intenta abrir la app directamente
-        } else {
-            // Si no es un dispositivo móvil, redirige a la versión web
-            window.location.href = youtubeWebUrl;
-        }
-    </script>
 </head>
 <body>
-    <div class="message" id="initial-message">
-        <h1>Redirigiendo a YouTube</h1>
-        <p>Por favor, espera mientras intentamos abrir la aplicación de YouTube.</p>
-        <p>Si no se abre automáticamente, haz clic <a href="https://youtu.be/MM0CDk-p4FQ?si=IabhfwjlQXQYg1Bs">aquí</a>.</p>
+    <div class="redirect-card">
+        <img src="https://www.youtube.com/s/desktop/d743f786/img/favicon_96x96.png" alt="YouTube" class="youtube-icon">
+        <h1>Contenido Exclusivo</h1>
+        <p class="subtitle">Estás a punto de ser redirigido automáticamente al video</p>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        
+        <div class="countdown-container">
+            <span>Redirección en</span>
+            <span class="countdown" id="countdown">5</span>
+            <span>segundos</span>
+        </div>
+        
+        <a href="https://youtu.be/xXR-t6sYn4I" class="redirect-button">
+            <span class="play-icon">▶</span>
+            <span>Ver Video Ahora</span>
+        </a>
     </div>
+
+    <script>
+        // Configuración centralizada
+        const config = {
+            videoId: "xXR-t6sYn4I",
+            countdownStart: 5,
+            mobileRedirectDelay: 1500,
+            desktopRedirectDelay: 500
+        };
+        
+        // Generación de URLs
+        const urls = {
+            deepLink: `vnd.youtube://${config.videoId}`,
+            webUrl: `https://youtu.be/${config.videoId}`,
+            appUrl: `https://www.youtube.com/watch?v=${config.videoId}`
+        };
+        
+        // Elementos del DOM
+        const elements = {
+            countdown: document.getElementById('countdown'),
+            progressBar: document.getElementById('progressBar'),
+            redirectButton: document.querySelector('.redirect-button')
+        };
+        
+        // Control de la cuenta regresiva
+        let countdownValue = config.countdownStart;
+        
+        const updateCountdown = () => {
+            elements.countdown.textContent = countdownValue;
+            const progress = 100 - ((countdownValue / config.countdownStart) * 100);
+            elements.progressBar.style.width = `${progress}%`;
+            
+            if (countdownValue <= 0) {
+                clearInterval(countdownInterval);
+            } else {
+                countdownValue--;
+            }
+        };
+        
+        const countdownInterval = setInterval(updateCountdown, 1000);
+        
+        // Detección de dispositivo
+        const isMobileDevice = () => {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        };
+        
+        // Estrategia de redirección optimizada
+        const executeRedirect = () => {
+            if (!isMobileDevice()) {
+                window.location.href = urls.webUrl;
+                return;
+            }
+            
+            // 1. Intento: iframe oculto (mejor compatibilidad iOS)
+            const iframe = document.createElement('iframe');
+            iframe.style.cssText = 'display:none;width:0;height:0;border:0;';
+            iframe.src = urls.deepLink;
+            document.body.appendChild(iframe);
+            
+            // 2. Intento: redirección directa
+            setTimeout(() => {
+                window.location.href = urls.deepLink;
+            }, 300);
+            
+            // 3. Intento: URL de la app
+            setTimeout(() => {
+                window.location.href = urls.appUrl;
+            }, 800);
+            
+            // 4. Redirección final al navegador web
+            setTimeout(() => {
+                window.location.href = urls.webUrl;
+            }, 2000);
+        };
+        
+        // Manejador de clic para el botón
+        elements.redirectButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            executeRedirect();
+        });
+        
+        // Iniciar redirección automática
+        setTimeout(() => {
+            executeRedirect();
+        }, config.mobileRedirectDelay);
+    </script>
 </body>
 </html>
